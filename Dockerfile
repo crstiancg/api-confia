@@ -31,8 +31,7 @@ WORKDIR /var/www/html
 
 COPY --from=vendor /app .
 
-RUN addgroup -g 1000 www && adduser -G www -g www -s /bin/sh -D www \
-    && chown -R www:www /var/www/html \
+RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
