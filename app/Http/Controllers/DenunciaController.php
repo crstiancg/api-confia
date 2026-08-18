@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 class DenunciaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Denuncia::orderByDesc('fecha')->paginate(20);
+        if ($request->boolean('paginate')) {
+            return Denuncia::orderByDesc('fecha')->paginate(20);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'datos' => Denuncia::orderByDesc('fecha')->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -21,7 +28,13 @@ class DenunciaController extends Controller
             'estado' => 'nullable|in:pendiente,en_revision,atendida',
         ]);
 
-        return response()->json(Denuncia::create($data), 201);
+        $denuncia = Denuncia::create($data);
+
+        return response()->json([
+            'ok' => true,
+            'id' => $denuncia->id,
+            'datos' => $denuncia,
+        ], 201);
     }
 
     public function show(Denuncia $denuncia)

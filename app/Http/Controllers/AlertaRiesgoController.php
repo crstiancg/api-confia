@@ -15,7 +15,14 @@ class AlertaRiesgoController extends Controller
             $query->where('atendido', $request->boolean('atendido'));
         }
 
-        return $query->paginate(20);
+        if ($request->boolean('paginate')) {
+            return $query->paginate(20);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'datos' => $query->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -27,7 +34,13 @@ class AlertaRiesgoController extends Controller
             'atendido' => 'nullable|boolean',
         ]);
 
-        return response()->json(AlertaRiesgo::create($data), 201);
+        $alerta = AlertaRiesgo::create($data);
+
+        return response()->json([
+            'ok' => true,
+            'id' => $alerta->id,
+            'datos' => $alerta,
+        ], 201);
     }
 
     public function show(AlertaRiesgo $alertaRiesgo)

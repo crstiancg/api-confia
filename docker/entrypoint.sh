@@ -3,7 +3,6 @@ set -e
 
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
-chmod 600 storage/oauth-*.key 2>/dev/null || true
 
 if [ -z "$APP_KEY" ]; then
     export APP_KEY=$(php artisan key:generate --show)
@@ -24,9 +23,6 @@ done
 echo "Base de datos disponible."
 
 php artisan migrate --force
-
-php artisan passport:keys --force
-chmod 600 storage/oauth-*.key
 
 php artisan app:ensure-oauth-client
 php artisan db:seed --class=AdminUserSeeder --force

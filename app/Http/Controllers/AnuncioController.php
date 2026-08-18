@@ -8,23 +8,39 @@ use Illuminate\Support\Str;
 
 class AnuncioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Anuncio::orderByDesc('fecha')->paginate(20);
+        if ($request->boolean('paginate')) {
+            return Anuncio::orderByDesc('fecha')->paginate(20);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'datos' => Anuncio::orderByDesc('fecha')->get(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            'id' => 'nullable|string|max:50',
             'titulo' => 'required|string|max:255',
             'mensaje' => 'required|string',
             'grado' => 'nullable|string|max:100',
             'autor' => 'nullable|string|max:191',
         ]);
 
-        $data['id'] = (string) Str::uuid();
+        if (empty($data['id'])) {
+            $data['id'] = (string) Str::uuid();
+        }
 
-        return response()->json(Anuncio::create($data), 201);
+        $anuncio = Anuncio::create($data);
+
+        return response()->json([
+            'ok' => true,
+            'id' => $anuncio->id,
+            'datos' => $anuncio,
+        ], 201);
     }
 
     public function show(Anuncio $anuncio)

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgendaEventoController;
 use App\Http\Controllers\AlertaRiesgoController;
 use App\Http\Controllers\AnuncioController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DenunciaController;
 use App\Http\Controllers\RegistroEmocionalController;
@@ -11,6 +12,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', fn () => response()->json(['ok' => true, 'servicio' => 'CONFIA API']));
+
+// Autenticación (Estudiantes en 'usuarios' y Admins en 'users')
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/admin/login', [AuthController::class, 'login']);
+Route::post('/auth/admin/register', [AuthController::class, 'adminRegister']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     $user = $request->user();

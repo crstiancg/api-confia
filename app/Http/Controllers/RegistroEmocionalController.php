@@ -15,7 +15,14 @@ class RegistroEmocionalController extends Controller
             $query->where('correo', $request->query('correo'));
         }
 
-        return $query->paginate(20);
+        if ($request->boolean('paginate')) {
+            return $query->paginate(20);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'datos' => $query->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -29,7 +36,13 @@ class RegistroEmocionalController extends Controller
             'comentario' => 'nullable|string',
         ]);
 
-        return response()->json(RegistroEmocional::create($data), 201);
+        $registro = RegistroEmocional::create($data);
+
+        return response()->json([
+            'ok' => true,
+            'id' => $registro->id,
+            'datos' => $registro,
+        ], 201);
     }
 
     public function show(RegistroEmocional $registroEmocional)

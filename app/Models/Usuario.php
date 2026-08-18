@@ -12,11 +12,17 @@ class Usuario extends Model
 
     protected $fillable = [
         'correo',
+        'password',
         'grado',
         'rol',
     ];
 
+    protected $hidden = [
+        'password',
+    ];
+
     protected $casts = [
+        'password' => 'hashed',
         'fecha_registro' => 'datetime',
     ];
 }

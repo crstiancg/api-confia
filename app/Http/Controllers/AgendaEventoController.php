@@ -15,7 +15,14 @@ class AgendaEventoController extends Controller
             $query->where('correo', $request->query('correo'));
         }
 
-        return $query->paginate(20);
+        if ($request->boolean('paginate')) {
+            return $query->paginate(20);
+        }
+
+        return response()->json([
+            'ok' => true,
+            'datos' => $query->get(),
+        ]);
     }
 
     public function store(Request $request)
@@ -26,7 +33,13 @@ class AgendaEventoController extends Controller
             'titulo' => 'required|string|max:255',
         ]);
 
-        return response()->json(AgendaEvento::create($data), 201);
+        $evento = AgendaEvento::create($data);
+
+        return response()->json([
+            'ok' => true,
+            'id' => $evento->id,
+            'datos' => $evento,
+        ], 201);
     }
 
     public function show(AgendaEvento $agendaEvento)
