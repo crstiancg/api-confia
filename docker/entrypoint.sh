@@ -25,10 +25,8 @@ echo "Base de datos disponible."
 
 php artisan migrate --force
 
-if [ ! -f storage/oauth-private.key ]; then
-    php artisan passport:keys
-    chmod 600 storage/oauth-*.key
-fi
+php artisan passport:keys --force
+chmod 600 storage/oauth-*.key
 
 php artisan app:ensure-oauth-client
 php artisan db:seed --class=AdminUserSeeder --force
