@@ -6,6 +6,19 @@ if [ -z "$APP_KEY" ]; then
 fi
 
 php artisan config:clear
+
+echo "Esperando conexión a la base de datos ($DB_HOST:$DB_PORT)..."
+attempt=0
+until php artisan db:show > /dev/null 2>&1; do
+    attempt=$((attempt + 1))
+    if [ "$attempt" -ge 30 ]; then
+        echo "No se pudo conectar a la base de datos después de 30 intentos."
+        exit 1
+    fi
+    sleep 2
+done
+echo "Base de datos disponible."
+
 php artisan migrate --force
 
 exec "$@"
